@@ -6,7 +6,7 @@ Requires at least: 3.6
 Tested up to: 4.1
 Stable tag: trunk
 
-A simple plugin that adds rel="nofollow" attribute to non-homepage Blogroll Links. Improves SEO while still giving link love to your favorite sites.
+A simple plugin that adds rel=nofollow attribute to non-homepage Blogroll Links. Improves SEO while giving link love to your favorite sites.
 
 == Description == 
 
