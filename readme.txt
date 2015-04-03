@@ -2,7 +2,7 @@
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/rs-nofollow-blogroll-donate/
 Tags: nofollow, links, blogroll, seo, search engine optimization
-Requires at least: 3.6
+Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: trunk
 
@@ -14,7 +14,7 @@ A simple plugin that adds rel="nofollow" attribute to Blogroll Links on interior
 
 The default setting for WordPress Blogrolls does not add the rel="nofollow" attribute to links. If you are familiar with Search Engine Optimization, you know that linking out to other sites from every single page of your site (as a Blogroll does) can hurt your SEO because you lose too much link juice. It also doesn't really  help the sites you're linking to because search engine don't place as much value on sitewide links - all the other sites need is one good link from your site.
 
-This plugin will allow you to give link love to sites in your Blogroll from the homepage of your site or front page of your blog, which are most likely the strongest pages anyway. On all the other interior pages of your site, the rel="nofollow" attribute will be added to Blogroll links to prevent unnecessary bleeding of link juice. This is different from some other plugins in that it doesn't add nofollow to the Blogroll links on the homepage or the blog front page. (The homepage and the blog front page may be the same thing on many sites, but in WordPress there is a differentiation for people who have the blog at a different URL form the main WordPress directory on the same site. For example: if the WordPress directory is yourblog.com and the blog URL is yourblog.com/blog/)
+This plugin will allow you to give link love to sites in your Blogroll from the homepage of your site or front page of your blog, which are most likely the strongest pages anyway. On all the other interior pages of your site, the rel="nofollow" attribute will be added to Blogroll links to prevent unnecessary bleeding of link juice. This is different from some other plugins in that it doesn't add nofollow to the Blogroll links on the homepage or the blog front page. (The homepage and the blog front page may be the same thing on many sites, but in WordPress there is a differentiation for people who have the blog at a different URL form the main WordPress directory on the same site. For example: if the WordPress directory is `yourblog.com` and the blog URL is `yourblog.com/blog/`)
 
 For a more thorough explanation of what the plugin does and why you need it, visit the [RS Nofollow Blogroll homepage](http://www.redsandmarketing.com/plugins/rs-nofollow-blogroll/ "RS Nofollow Blogroll Plugin").
 
@@ -55,10 +55,22 @@ For more info and full documentation, visit the [RS Nofollow Blogroll plugin hom
 
 == Changelog ==
 
+= 1.0.1 =
+*released 04/02/15*
+
+* Added an uninstall function that completely uninstalls the plugin and removes all options, data, and traces of its existence when it is deleted through the dashboard.
+* Increased minimum required WordPress version to 3.8. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1.1) for security and functionality.
+* Fixed a few potential minor issues with UTF-8 and multibyte support.
+* Made various minor code improvements.
+
 = 1.0 =
 *released 02/24/15*
 
 * Initial release.
+
+== Upgrade Notice ==
+= 1.0.1 =
+Added an uninstall function to make sure all traces of the plugin are removed upon deletion, increased minimum required WordPress Version to 3.8, and made various minor code improvements. Please see Changelog for details.
 
 == Frequently Asked Questions ==
 
