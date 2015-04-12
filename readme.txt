@@ -59,6 +59,11 @@ For more info and full documentation, visit the [RS Nofollow Blogroll plugin hom
 
 == Changelog ==
 
+= 1.0.2 =
+*released 04/11/15*
+
+* Added a fix to prevent network activation when used in multisite, and added network admin notice to explain. The plugin can be used in multisite just fine, but will need to be activated individually per site for now. Once we can get time to adapt the plugin to multisite more specifically, we can remove this restriction.
+
 = 1.0.1 =
 *released 04/02/15*
 
@@ -73,8 +78,8 @@ For more info and full documentation, visit the [RS Nofollow Blogroll plugin hom
 * Initial release.
 
 == Upgrade Notice ==
-= 1.0.1 =
-Added an uninstall function to make sure all traces of the plugin are removed upon deletion, increased minimum required WordPress Version to 3.8, and made various minor code improvements. Please see Changelog for details.
+= 1.0.2 =
+Added a fix to prevent network activation when used in multisite. Please see Changelog for details.
 
 == Frequently Asked Questions ==
 

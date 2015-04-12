@@ -4,7 +4,7 @@ Plugin Name: RS Nofollow Blogroll
 Plugin URI: http://www.redsandmarketing.com/plugins/rs-nofollow-blogroll/
 Description: A simple plugin that adds rel="nofollow" attribute to Blogroll Links on interior pages of your site. Helps SEO while still providing some link love to your favorite sites.
 Author: Scott Allen
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: rs-nofollow-blogroll
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'RSNFB_VERSION', '1.0.1' );
+define( 'RSNFB_VERSION', '1.0.2' );
 define( 'RSNFB_REQUIRED_WP_VERSION', '3.8' );
 
 if ( !defined( 'RSNFB_DEBUG' ) ) 				{ define( 'RSNFB_DEBUG', false ); } // Do not change value unless developer asks you to - for debugging only. Change in wp-config.php.
@@ -57,6 +57,10 @@ if ( !defined( 'RSMP_SERVER_NAME' ) ) 			{ define( 'RSMP_SERVER_NAME', rsnfb_get
 if ( !defined( 'RSMP_SERVER_NAME_REV' ) ) 		{ define( 'RSMP_SERVER_NAME_REV', strrev( RSMP_SERVER_NAME ) ); }
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME' ) ) 	{ define( 'RSMP_DEBUG_SERVER_NAME', '.redsandmarketing.com' ); }
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME_REV' ) )	{ define( 'RSMP_DEBUG_SERVER_NAME_REV', strrev( RSMP_DEBUG_SERVER_NAME ) ); }
+if ( !defined( 'RSMP_WP_VERSION' ) ) {
+	global $wp_version;
+	define( 'RSMP_WP_VERSION', $wp_version );
+	}
 
 if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR != '127.0.0.1' && RSNFB_DEBUG != true  && WP_DEBUG != true ) {
 	error_reporting(0); // Prevents error display on production sites, but testing on 127.0.0.1 will display errors, or if debug mode turned on
@@ -142,27 +146,43 @@ function rsnfb_get_domain($url) {
 // Standard Functions - END
 
 // Admin Functions - BEGIN
-register_activation_hook( __FILE__, 'rsnfb_install_on_first_activation' );
-function rsnfb_install_on_first_activation() {
-	$installed_ver = get_option('rs_nofollow_blogroll_version');
-	if ( empty( $installed_ver ) || $installed_ver != RSNFB_VERSION ) {
-		update_option('rs_nofollow_blogroll_version', RSNFB_VERSION);
-		}
+register_activation_hook( __FILE__, 'rsnfb_activation' );
+function rsnfb_activation() {
+	rsnfb_upgrade_check();
 	}
 add_action( 'admin_init', 'rsnfb_check_version' );
 function rsnfb_check_version() {
-	// Make sure user has minimum required WordPress version, in order to prevent issues
-	global $wp_version;
-	$rsnfb_wp_version = $wp_version;
-	if ( version_compare( $rsnfb_wp_version, RSNFB_REQUIRED_WP_VERSION, '<' ) ) {
-		deactivate_plugins( RSNFB_PLUGIN_BASENAME );
-		$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', RSNFB_PLUGIN_NAME ), RSNFB_REQUIRED_WP_VERSION );
-		$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
-		update_option( 'rsnfb_admin_notices', $new_admin_notice );
-		add_action( 'admin_notices', 'rsnfb_admin_notices' );
-		return false;
+	if ( current_user_can( 'manage_network' ) ) {
+		/* Check for pending admin notices */
+		$admin_notices = get_option('rsnfb_admin_notices');
+		if ( !empty( $admin_notices ) ) { add_action( 'network_admin_notices', 'rsnfb_admin_notices' ); }
+		/* Make sure not network activated */
+		if ( is_plugin_active_for_network( RSNFB_PLUGIN_BASENAME ) ) {
+			deactivate_plugins( RSNFB_PLUGIN_BASENAME, TRUE, TRUE );
+			$notice_text = __( 'Plugin deactivated. RS Nofollow Blogroll is not available for network activation.', RSNFB_PLUGIN_NAME );
+			$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
+			update_option( 'rsnfb_admin_notices', $new_admin_notice );
+			add_action( 'network_admin_notices', 'rsnfb_admin_notices' );
+			return FALSE;
+			}
 		}
-	add_action( 'admin_notices', 'rsnfb_admin_notices' );
+	if ( current_user_can('manage_options') ) {
+		/* Check if plugin has been upgraded */
+		rsnfb_upgrade_check();
+		/* Check for pending admin notices */
+		$admin_notices = get_option('rsnfb_admin_notices');
+		if ( !empty( $admin_notices ) ) { add_action( 'admin_notices', 'rsnfb_admin_notices' ); }
+		/* Make sure user has minimum required WordPress version, in order to prevent issues */
+		$rsnfb_wp_version = RSMP_WP_VERSION;
+		if ( version_compare( $rsnfb_wp_version, RSNFB_REQUIRED_WP_VERSION, '<' ) ) {
+			deactivate_plugins( RSNFB_PLUGIN_BASENAME );
+			$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', RSNFB_PLUGIN_NAME ), RSNFB_REQUIRED_WP_VERSION );
+			$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
+			update_option( 'rsnfb_admin_notices', $new_admin_notice );
+			add_action( 'admin_notices', 'rsnfb_admin_notices' );
+			return FALSE;
+			}
+		}
 	}
 function rsnfb_admin_notices() {
 	$admin_notices = get_option('rsnfb_admin_notices');
@@ -172,6 +192,10 @@ function rsnfb_admin_notices() {
 		echo '<div class="'.$style.'"><p>'.$notice.'</p></div>';
 		}
 	delete_option('rsnfb_admin_notices');
+	}
+function rsnfb_upgrade_check( $installed_ver = NULL ) {
+	if ( empty( $installed_ver ) ) { $installed_ver = get_option('rs_nofollow_blogroll_version'); }
+	if ( $installed_ver != RSNFB_VERSION ) { update_option('rs_nofollow_blogroll_version', RSNFB_VERSION); }
 	}
 // Admin Functions - END
 
