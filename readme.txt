@@ -3,7 +3,7 @@ Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/rs-nofollow-blogroll-donate/
 Tags: nofollow, links, blogroll, seo, search engine optimization
 Requires at least: 3.8
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: trunk
 
 A simple plugin that adds rel=nofollow attribute to non-homepage Blogroll Links. Improves SEO while giving link love to your favorite sites.
@@ -59,6 +59,12 @@ For more info and full documentation, visit the [RS Nofollow Blogroll plugin hom
 
 == Changelog ==
 
+= 1.0.3 =
+*released 04/23/15*
+
+* Added an `.htaccess` file to the `rs-nofollow-blogroll` directory to control browser access to certain files.
+* Made various minor code improvements.
+
 = 1.0.2 =
 *released 04/11/15*
 
@@ -78,8 +84,8 @@ For more info and full documentation, visit the [RS Nofollow Blogroll plugin hom
 * Initial release.
 
 == Upgrade Notice ==
-= 1.0.2 =
-Added a fix to prevent network activation when used in multisite. Please see Changelog for details.
+= 1.0.3 =
+Made various minor code improvements and added an .htaccess file to control browser access to certain files. Please see Changelog for details.
 
 == Frequently Asked Questions ==
 
